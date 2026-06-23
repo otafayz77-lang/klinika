@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Xarajatlar{% endblock %}
+{% block page_title %}Xarajatlar{% endblock %}
+{% block page_sub %}<div class="sub">Jami: {{ total|floatformat:0 }} so'm</div>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div></div>
+  <button onclick="openModal('addExp')" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Xarajat qo'shish</button>
+</div>
+<div class="panel">
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Sana</th><th>Kategoriya</th><th>Nomi</th><th>Summa</th></tr></thead>
+      <tbody>
+      {% for e in expenses %}
+      <tr><td>{{ e.date|date:"d.m.Y" }}</td><td><span class="tag tag-muted">{{ e.get_category_display }}</span></td><td>{{ e.title }}</td><td style="font-weight:700; color:var(--rose);">{{ e.amount|floatformat:0 }}</td></tr>
+      {% empty %}
+      <tr><td colspan="4" class="empty-row">Xarajat yo'q</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal-bg" id="addExp">
+<div class="modal" style="max-width:480px;">
+  <div class="modal-head"><h3>Xarajat qo'shish</h3><button class="modal-x" onclick="closeModal('addExp')">&times;</button></div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="field"><label>Kategoriya</label><select name="category"><option value="salary">Maosh</option><option value="medicine">Dori-darmon</option><option value="equipment">Jihozlar</option><option value="utilities">Kommunal</option><option value="maintenance">Ta'mirlash</option><option value="other">Boshqa</option></select></div>
+    <div class="field"><label>Nomi *</label><input name="title" required></div>
+    <div class="field"><label>Summa *</label><input type="number" name="amount" required></div>
+    <div class="field"><label>Sana *</label><input type="date" name="date" required></div>
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button type="button" onclick="closeModal('addExp')" class="btn btn-ghost">Bekor</button>
+      <button type="submit" class="btn btn-primary">Saqlash</button>
+    </div>
+  </form>
+</div>
+</div>
+{% endblock %}

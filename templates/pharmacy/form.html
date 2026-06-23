@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Mahsulot{% endblock %}
+{% block page_title %}{% if medicine %}Mahsulotni tahrirlash{% else %}Yangi mahsulot{% endif %}{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:560px;">
+  <div class="panel-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="field"><label>Nomi *</label><input name="name" value="{{ medicine.name|default:"" }}" required></div>
+      <div class="grid-2">
+        <div class="field"><label>Kategoriya</label><select name="category"><option value="">Tanlang</option>{% for c in categories %}<option value="{{ c.pk }}" {% if medicine.category_id == c.pk %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
+        <div class="field"><label>O'lchov birligi</label><select name="unit"><option value="piece">Dona</option><option value="pack">Paket</option><option value="bottle">Shisha</option><option value="box">Quti</option><option value="ml">ml</option><option value="g">gramm</option></select></div>
+        <div class="field"><label>Sotish narxi (so'm) *</label><input type="number" name="sell_price" value="{{ medicine.sell_price|default:0 }}" required></div>
+        <div class="field"><label>Zaxira miqdori</label><input type="number" name="stock_quantity" value="{{ medicine.stock_quantity|default:0 }}"></div>
+        <div class="field"><label>Minimal zaxira</label><input type="number" name="min_stock" value="{{ medicine.min_stock|default:10 }}"></div>
+      </div>
+      <div style="display:flex; gap:10px; justify-content:flex-end;">
+        <a href="{% url "medicines" %}" class="btn btn-ghost">Bekor</a>
+        <button type="submit" class="btn btn-primary">Saqlash</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

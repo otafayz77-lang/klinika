@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Bemorlarim{% endblock %}
+{% block page_title %}Bemorlarim{% endblock %}
+{% block page_sub %}<div class="sub">Sizga navbat olgan bemorlar ro'yxati</div>{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>To'liq ismi</th><th>Yoshi</th><th>Telefon</th><th></th></tr></thead>
+      <tbody>
+      {% for p in patients %}
+      <tr>
+        <td class="mono">{{ p.patient_id }}</td>
+        <td><strong>{{ p.full_name }}</strong></td>
+        <td>{{ p.age }} yosh</td>
+        <td>{{ p.phone }}</td>
+        <td><a href="{% url "treatment_create" p.pk %}" class="btn btn-primary btn-sm">Davolash kiritish</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="empty-row"><i class="fa-solid fa-users"></i>Hali bemor yo'q</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

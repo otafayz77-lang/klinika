@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Bosh sahifa{% endblock %}
+{% block page_title %}Bosh sahifa{% endblock %}
+{% block page_sub %}<div class="sub">Klinikaning umumiy holati</div>{% endblock %}
+{% block content %}
+<div class="tiles">
+  <div class="tile t-purple"><div class="tile-icon"><i class="fa-solid fa-user-doctor"></i></div><div><div class="tile-val">{{ total_doctors }}</div><div class="tile-label">Faol shifokorlar</div></div></div>
+  <div class="tile t-teal"><div class="tile-icon"><i class="fa-solid fa-users"></i></div><div><div class="tile-val">{{ total_patients }}</div><div class="tile-label">Bemorlar (navbat olganlar)</div></div></div>
+  <div class="tile t-gold"><div class="tile-icon"><i class="fa-solid fa-user-clock"></i></div><div><div class="tile-val">{{ pending_patients }}</div><div class="tile-label">Ro'yxatdan o'tgan, navbat olmagan</div></div></div>
+  <div class="tile t-terra"><div class="tile-icon"><i class="fa-solid fa-calendar-day"></i></div><div><div class="tile-val">{{ today_appointments }}</div><div class="tile-label">Bugungi navbatlar</div></div></div>
+  <div class="tile t-sage"><div class="tile-icon"><i class="fa-solid fa-coins"></i></div><div><div class="tile-val" style="font-size:19px;">{{ today_income|floatformat:0 }}</div><div class="tile-label">Bugungi kirim (so'm)</div></div></div>
+  <div class="tile t-rose"><div class="tile-icon"><i class="fa-solid fa-chart-line"></i></div><div><div class="tile-val" style="font-size:19px;">{{ month_income|floatformat:0 }}</div><div class="tile-label">Oylik kirim (so'm)</div></div></div>
+</div>
+
+<div class="grid-2" style="margin-bottom:20px;">
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title"><i class="fa-solid fa-stethoscope"></i> So'nggi davolashlar</div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Bemor</th><th>Shifokor</th><th>Narxi</th><th>Vaqt</th></tr></thead>
+        <tbody>
+        {% for t in recent_treatments %}
+        <tr>
+          <td><a href="{% url "patient_detail_admin" t.patient.pk %}" style="color:var(--teal); font-weight:600;">{{ t.patient.full_name }}</a></td>
+          <td>{{ t.doctor }}</td>
+          <td style="font-weight:700;">{{ t.total_price|floatformat:0 }}</td>
+          <td style="font-size:12px; color:var(--ink-soft);">{{ t.created_at|date:"d.m H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="empty-row"><i class="fa-solid fa-stethoscope"></i>Hali davolash yo'q</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title"><i class="fa-solid fa-bed-pulse"></i> Palata holati</div>
+      <a href="{% url "wards" %}" class="btn btn-ghost btn-sm">Barchasi</a>
+    </div>
+    <div class="panel-body">
+      {% for w in wards %}
+      <div style="margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+          <span style="font-weight:600;">Palata {{ w.number }} — {{ w.name }}</span>
+          <span style="color:var(--ink-soft);">{{ w.occupied_beds }}/{{ w.total_beds }}</span>
+        </div>
+        <div style="background:#f0ece2; border-radius:6px; height:8px; overflow:hidden;">
+          <div style="background:{% if w.occupied_beds == w.total_beds %}var(--rose){% else %}var(--teal){% endif %}; height:100%; width:{% widthratio w.occupied_beds w.total_beds 100 %}%;"></div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="empty-state"><i class="fa-solid fa-bed-pulse"></i><p>Palata qo'shilmagan</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-title"><i class="fa-solid fa-pills"></i> Kam qolgan mahsulotlar</div>
+    <a href="{% url "medicines" %}" class="btn btn-ghost btn-sm">Dorixona</a>
+  </div>
+  <div class="panel-body">
+    {% if low_stock %}
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;">
+      {% for m in low_stock %}
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#fbf8f1; border-radius:10px; border:1px solid var(--line);">
+        <div>
+          <div style="font-weight:600; font-size:13px;">{{ m.name }}</div>
+          <div style="font-size:11px; color:var(--ink-soft);">Minimal: {{ m.min_stock }}</div>
+        </div>
+        <span class="tag tag-danger">{{ m.stock_quantity }} {{ m.get_unit_display }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="fa-solid fa-circle-check"></i><p>Hamma mahsulotlar yetarli</p></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

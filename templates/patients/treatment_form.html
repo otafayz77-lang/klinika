@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Davolash{% endblock %}
+{% block page_title %}{{ patient.full_name }} davolash{% endblock %}
+{% block page_sub %}<div class="sub">Bemor ID: {{ patient.patient_id }} — Konsultatsiya narxi: {{ doctor.consultation_price|floatformat:0 }} so'm</div>{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:760px;">
+  <div class="panel-body">
+    <form method="post" id="treatment-form">
+      {% csrf_token %}
+      <div class="field"><label>Tashxis *</label><textarea name="diagnosis" rows="2" required placeholder="Masalan: O'tkir respirator infeksiya"></textarea></div>
+      <div class="field"><label>Izoh</label><textarea name="notes" rows="2" placeholder="Qo'shimcha tavsiyalar"></textarea></div>
+
+      {% if services %}
+      <div class="field">
+        <label>Qo'shimcha ko'rik xizmati</label>
+        <select name="extra_service" id="extra-service-select" onchange="updateTotal()">
+          <option value="" data-price="0">Yo'q</option>
+          {% for s in services %}
+          <option value="{{ s.pk }}" data-price="{{ s.price }}">{{ s.name }} (+{{ s.price|floatformat:0 }} so'm)</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+
+      <div style="margin-top:22px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.04em;">Ishlatilgan dori / mahsulotlar</div>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="addRow()"><i class="fa-solid fa-plus"></i> Qator qo'shish</button>
+      </div>
+
+      <div id="items-wrap"></div>
+
+      <div class="panel" style="background:#fbf8f1; border:1.5px dashed var(--line); margin-top:20px;">
+        <div class="panel-body" style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:12.5px; color:var(--ink-soft);">Konsultatsiya + dorilar</div>
+            <div style="font-family:'Fraunces',serif; font-size:26px; font-weight:700; color:var(--terracotta);" id="total-display">{{ doctor.consultation_price|floatformat:0 }} so'm</div>
+          </div>
+          <i class="fa-solid fa-calculator" style="font-size:28px; color:var(--line);"></i>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:20px; padding:13px;"><i class="fa-solid fa-floppy-disk"></i> Davolashni yakunlash</button>
+    </form>
+  </div>
+</div>
+
+<template id="row-template">
+  <div class="item-row" style="display:grid; grid-template-columns:1fr 100px 130px 32px; gap:10px; margin-bottom:10px; align-items:center;">
+    <select name="medicine_id" class="med-select" onchange="updateTotal()">
+      <option value="">Mahsulot tanlang</option>
+      {% for m in medicines %}
+      <option value="{{ m.pk }}" data-price="{{ m.sell_price }}" data-stock="{{ m.stock_quantity }}">{{ m.name }} ({{ m.sell_price|floatformat:0 }} so'm, {{ m.stock_quantity }} {{ m.get_unit_display }})</option>
+      {% endfor %}
+    </select>
+    <input type="number" name="quantity" class="qty-input" min="1" value="1" onchange="updateTotal()">
+    <div class="row-subtotal mono" style="font-size:13px; font-weight:700; text-align:right;">0 so'm</div>
+    <button type="button" class="btn btn-ghost btn-sm" onclick="this.closest('.item-row').remove(); updateTotal();"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+</template>
+
+<script>
+const consultPrice = {{ doctor.consultation_price }};
+
+function addRow() {
+  const tpl = document.getElementById('row-template');
+  const clone = tpl.content.cloneNode(true);
+  document.getElementById('items-wrap').appendChild(clone);
+}
+
+function updateTotal() {
+  let total = consultPrice;
+
+  const serviceSelect = document.getElementById('extra-service-select');
+  if (serviceSelect) {
+    const opt = serviceSelect.options[serviceSelect.selectedIndex];
+    total += opt ? parseFloat(opt.dataset.price || 0) : 0;
+  }
+
+  document.querySelectorAll('.item-row').forEach(row => {
+    const select = row.querySelector('.med-select');
+    const qtyInput = row.querySelector('.qty-input');
+    const opt = select.options[select.selectedIndex];
+    const price = opt ? parseFloat(opt.dataset.price || 0) : 0;
+    const stock = opt ? parseInt(opt.dataset.stock || 0) : 0;
+    let qty = parseInt(qtyInput.value || 0);
+    if (qty > stock && stock > 0) { qty = stock; qtyInput.value = stock; }
+    const subtotal = price * qty;
+    row.querySelector('.row-subtotal').textContent = subtotal.toLocaleString('fr-FR').replace(/,/g, ' ') + " so'm";
+    total += subtotal;
+  });
+  document.getElementById('total-display').textContent = total.toLocaleString('fr-FR').replace(/,/g, ' ') + " so'm";
+}
+
+addRow();
+</script>
+{% endblock %}

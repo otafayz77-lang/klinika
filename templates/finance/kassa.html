@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Kassa{% endblock %}
+{% block page_title %}Kassa{% endblock %}
+{% block page_sub %}<div class="sub">Doktor davolashni yakunlaganda kirim avtomatik qo'shiladi</div>{% endblock %}
+{% block content %}
+<div class="tiles" style="grid-template-columns:repeat(3,1fr);">
+  <div class="tile t-sage"><div class="tile-icon"><i class="fa-solid fa-arrow-up"></i></div><div><div class="tile-val" style="font-size:19px;">{{ today_income|floatformat:0 }}</div><div class="tile-label">Bugungi kirim</div></div></div>
+  <div class="tile t-rose"><div class="tile-icon"><i class="fa-solid fa-arrow-down"></i></div><div><div class="tile-val" style="font-size:19px;">{{ today_expense|floatformat:0 }}</div><div class="tile-label">Bugungi chiqim</div></div></div>
+  <div class="tile t-teal"><div class="tile-icon"><i class="fa-solid fa-wallet"></i></div><div><div class="tile-val" style="font-size:19px;">{{ balance|floatformat:0 }}</div><div class="tile-label">Balans</div></div></div>
+</div>
+<div class="grid-2" style="grid-template-columns:1fr 320px;">
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">Oxirgi operatsiyalar</div></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Sana</th><th>Tur</th><th>Tavsif</th><th>Summa</th></tr></thead>
+        <tbody>
+        {% for e in entries %}
+        <tr>
+          <td style="font-size:12px;">{{ e.date|date:"d.m H:i" }}</td>
+          <td>{% if e.transaction_type == "income" %}<span class="tag tag-ok">Kirim</span>{% else %}<span class="tag tag-danger">Chiqim</span>{% endif %}</td>
+          <td style="font-size:13px;">{{ e.description }}</td>
+          <td style="font-weight:700; {% if e.transaction_type == "income" %}color:var(--sage);{% else %}color:var(--rose);{% endif %}">{% if e.transaction_type == "income" %}+{% else %}−{% endif %}{{ e.amount|floatformat:0 }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="empty-row">Yozuv yo'q</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel" style="align-self:start;">
+    <div class="panel-head"><div class="panel-title">Qo'lda yozuv</div></div>
+    <div class="panel-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="field"><label>Tur *</label><select name="transaction_type"><option value="income">Kirim</option><option value="expense">Chiqim</option></select></div>
+        <div class="field"><label>Summa *</label><input type="number" name="amount" required></div>
+        <div class="field"><label>Tavsif *</label><input name="description" required></div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Qo'shish</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Dori kelishi{% endblock %}
+{% block page_title %}Mahsulot kelishi{% endblock %}
+{% block content %}
+<div class="grid-2" style="grid-template-columns:1fr 340px;">
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">Kelish tarixi</div></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Sana</th><th>Mahsulot</th><th>Miqdor</th><th>Yetkazuvchi</th></tr></thead>
+        <tbody>
+        {% for i in incomes %}
+        <tr><td style="font-size:12px;">{{ i.date|date:"d.m.Y" }}</td><td><strong>{{ i.medicine.name }}</strong></td><td>+{{ i.quantity }} {{ i.medicine.unit }}</td><td style="font-size:12px;">{{ i.supplier|default:"—" }}</td></tr>
+        {% empty %}
+        <tr><td colspan="4" class="empty-row">Kelish yo'q</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel" style="align-self:start;">
+    <div class="panel-head"><div class="panel-title">Yangi kelish</div></div>
+    <div class="panel-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="field"><label>Mahsulot *</label><select name="medicine" required><option value="">Tanlang</option>{% for m in medicines %}<option value="{{ m.pk }}">{{ m.name }}</option>{% endfor %}</select></div>
+        <div class="field"><label>Miqdor *</label><input type="number" name="quantity" required></div>
+        <div class="field"><label>Kelish narxi *</label><input type="number" name="purchase_price" required></div>
+        <div class="field"><label>Yetkazuvchi</label><input name="supplier"></div>
+        <div class="field"><label>Sana *</label><input type="date" name="date" required></div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Saqlash</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

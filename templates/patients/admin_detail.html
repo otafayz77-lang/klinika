@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ patient.full_name }}{% endblock %}
+{% block page_title %}Bemor kartasi{% endblock %}
+{% block content %}
+<div class="grid-2" style="grid-template-columns:300px 1fr;">
+  <div>
+    <div class="panel" style="text-align:center; padding:26px;">
+      <div style="width:84px; height:84px; border-radius:50%; background:var(--role-patient-soft); color:var(--role-patient); display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; margin:0 auto 14px;">{{ patient.first_name|first }}</div>
+      <div style="font-size:18px; font-weight:700;">{{ patient.full_name }}</div>
+      <div style="color:var(--ink-soft); font-size:12px;" class="mono">{{ patient.patient_id }}</div>
+    </div>
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-head"><div class="panel-title">Ma'lumotlar</div></div>
+      <div class="panel-body" style="font-size:13px;">
+        <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--line);"><span style="color:var(--ink-soft);">Yoshi</span><strong>{{ patient.age }} yosh</strong></div>
+        <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--line);"><span style="color:var(--ink-soft);">Telefon</span><strong>{{ patient.phone }}</strong></div>
+        <div style="display:flex; justify-content:space-between; padding:7px 0;"><span style="color:var(--ink-soft);">Qon guruhi</span><strong>{{ patient.blood_type|default:"—" }}</strong></div>
+        {% if patient.allergies %}<div style="padding:7px 0; border-top:1px solid var(--line); color:var(--rose);"><strong>⚠ Allergiya:</strong> {{ patient.allergies }}</div>{% endif %}
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="panel" style="margin-bottom:18px;">
+      <div class="panel-head"><div class="panel-title"><i class="fa-solid fa-calendar-check"></i> Navbatlar</div></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Shifokor</th><th>Sana</th><th>Holat</th></tr></thead>
+          <tbody>
+          {% for a in appointments %}
+          <tr><td>{{ a.doctor }}</td><td>{{ a.availability.date|date:"d.m.Y" }} {{ a.availability.start_time|time:"H:i" }}</td><td><span class="tag tag-info">{{ a.get_status_display }}</span></td></tr>
+          {% empty %}
+          <tr><td colspan="3" class="empty-row">Navbat yo'q</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title"><i class="fa-solid fa-stethoscope"></i> Davolanish tarixi</div></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Shifokor</th><th>Tashxis</th><th>Narxi</th><th>Sana</th></tr></thead>
+          <tbody>
+          {% for t in treatments %}
+          <tr><td>{{ t.doctor }}</td><td style="max-width:200px;">{{ t.diagnosis|truncatechars:50 }}</td><td style="font-weight:700;">{{ t.total_price|floatformat:0 }}</td><td style="font-size:12px;">{{ t.created_at|date:"d.m.Y" }}</td></tr>
+          {% empty %}
+          <tr><td colspan="4" class="empty-row">Davolanish yo'q</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

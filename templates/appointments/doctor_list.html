@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Shifokor tanlash{% endblock %}
+{% block page_title %}Shifokor tanlang{% endblock %}
+{% block page_sub %}<div class="sub">Mutaxassis tanlang, so'ng bo'sh vaqtga navbat oling</div>{% endblock %}
+{% block content %}
+<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;">
+{% for d in doctors %}
+<div class="panel" style="padding:22px;">
+  <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+    <div style="width:52px; height:52px; border-radius:50%; background:var(--role-doctor-soft); color:var(--role-doctor); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:19px; font-weight:700; flex-shrink:0;">{{ d.first_name|first }}</div>
+    <div>
+      <div style="font-weight:700; font-size:15px;">{{ d.full_name }}</div>
+      <div style="font-size:12.5px; color:var(--terracotta); font-weight:600;">{{ d.specialization }}</div>
+    </div>
+  </div>
+  <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:16px;">
+    <div style="margin-bottom:4px;"><i class="fa-solid fa-user-clock" style="width:16px;"></i> {{ d.experience_years }} yil tajriba</div>
+    <div><i class="fa-solid fa-sack-dollar" style="width:16px;"></i> {{ d.consultation_price|floatformat:0 }} so'm</div>
+  </div>
+  <a href="{% url "book_appointment" d.pk %}" class="btn btn-primary" style="width:100%; justify-content:center;"><i class="fa-solid fa-calendar-plus"></i> Navbat olish</a>
+</div>
+{% empty %}
+<div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-user-doctor"></i><p>Hozircha shifokor yo'q</p></div>
+{% endfor %}
+</div>
+{% endblock %}

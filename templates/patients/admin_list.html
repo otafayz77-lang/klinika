@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Bemorlar{% endblock %}
+{% block page_title %}Bemorlar{% endblock %}
+{% block page_sub %}<div class="sub">Faqat navbat olgan (band qilgan) bemorlar ko'rsatilmoqda</div>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    {% if pending %}
+    <span class="tag tag-warn"><i class="fa-solid fa-user-clock"></i> {{ pending }} kishi ro'yxatdan o'tgan, lekin hali navbat olmagan</span>
+    {% endif %}
+  </div>
+  <form method="get" class="search-pill">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" name="q" value="{{ q }}" placeholder="Ism, ID, telefon...">
+  </form>
+</div>
+<div class="panel">
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>To'liq ismi</th><th>Yoshi</th><th>Telefon</th><th>Ro'yxatdan o'tgan</th><th></th></tr></thead>
+      <tbody>
+      {% for p in patients %}
+      <tr>
+        <td class="mono">{{ p.patient_id }}</td>
+        <td><strong>{{ p.full_name }}</strong></td>
+        <td>{{ p.age }} yosh</td>
+        <td>{{ p.phone }}</td>
+        <td style="font-size:12px; color:var(--ink-soft);">{{ p.registered_at|date:"d.m.Y" }}</td>
+        <td><a href="{% url "patient_detail_admin" p.pk %}" class="btn btn-ghost btn-sm"><i class="fa-solid fa-eye"></i> Ko'rish</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="empty-row"><i class="fa-solid fa-users"></i>Hali navbat olgan bemor yo'q</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

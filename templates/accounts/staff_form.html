@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Xodim{% endblock %}
+{% block page_title %}{% if staff %}Xodimni tahrirlash{% else %}Yangi xodim{% endif %}{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:560px;">
+  <div class="panel-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="grid-2">
+        <div class="field"><label>Ism *</label><input name="first_name" value="{{ staff.first_name|default:"" }}" required></div>
+        <div class="field"><label>Familiya *</label><input name="last_name" value="{{ staff.last_name|default:"" }}" required></div>
+      </div>
+      <div class="field"><label>Lavozim *</label>
+        <select name="position" required {% if staff.position == "doctor" %}disabled{% endif %}>
+          <option value="admin" {% if staff.position == "admin" %}selected{% endif %}>Administrator</option>
+          <option value="doctor" {% if staff.position == "doctor" %}selected{% endif %}>Shifokor</option>
+          <option value="nurse" {% if staff.position == "nurse" %}selected{% endif %}>Hamshira</option>
+          <option value="cleaner" {% if staff.position == "cleaner" %}selected{% endif %}>Farrosh</option>
+          <option value="other" {% if staff.position == "other" %}selected{% endif %}>Boshqa xodim</option>
+        </select>
+        {% if staff.position == "doctor" %}
+        <input type="hidden" name="position" value="doctor">
+        <div class="hint">Shifokor lavozimi shifokor profilidan boshqarilgani uchun o'zgartirib bo'lmaydi.</div>
+        {% endif %}
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Telefon</label><input name="phone" value="{{ staff.phone|default:"" }}"></div>
+        <div class="field"><label>Oylik maosh (so'm) *</label><input type="number" name="monthly_salary" value="{{ staff.monthly_salary|default:0 }}" required></div>
+      </div>
+      {% if not staff %}
+      <div class="field"><label>Ishga kirgan sana</label><input type="date" name="hire_date"></div>
+      {% endif %}
+      <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:10px;">
+        <a href="{% url "staff_list" %}" class="btn btn-ghost">Bekor</a>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Saqlash</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

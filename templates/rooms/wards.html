@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Palatalar{% endblock %}
+{% block page_title %}Palatalar (yotish bo'limi){% endblock %}
+{% block page_sub %}<div class="sub">Bemor YOTADIGAN joylar — Kabinetlardan alohida</div>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div></div>
+  <button onclick="openModal('addWard')" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Palata qo'shish</button>
+</div>
+<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;">
+{% for w in wards %}
+<div class="panel" style="padding:20px;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+    <div>
+      <div style="font-family:'Fraunces',serif; font-size:18px; font-weight:700;">Palata {{ w.number }}</div>
+      <div style="font-size:13px; color:var(--ink-soft);">{{ w.name }}</div>
+    </div>
+    <span class="tag tag-info">{{ w.get_ward_type_display }}</span>
+  </div>
+  <div style="margin-bottom:12px;">
+    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+      <span>Band: {{ w.occupied_beds }}/{{ w.total_beds }}</span>
+      <span style="color:{% if w.available_beds == 0 %}var(--rose){% else %}var(--sage){% endif %};">{{ w.available_beds }} bo'sh</span>
+    </div>
+    <div style="background:#f0ece2; border-radius:6px; height:9px; overflow:hidden;">
+      <div style="background:{% if w.occupied_beds == w.total_beds %}var(--rose){% else %}var(--teal){% endif %}; height:100%; width:{% widthratio w.occupied_beds w.total_beds 100 %}%;"></div>
+    </div>
+  </div>
+  <div style="font-size:12.5px; color:var(--ink-soft);">
+    <i class="fa-solid fa-sack-dollar" style="width:16px;"></i> {{ w.price_per_day|floatformat:0 }} so'm/kun &middot; {{ w.floor }}-qavat
+  </div>
+  <a href="{% url "admissions" %}" class="btn btn-ghost btn-sm" style="margin-top:14px; width:100%; justify-content:center;">Bemorlarni ko'rish</a>
+</div>
+{% empty %}
+<div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-bed-pulse"></i><p>Palata qo'shilmagan</p></div>
+{% endfor %}
+</div>
+<div class="modal-bg" id="addWard">
+<div class="modal" style="max-width:520px;">
+  <div class="modal-head"><h3>Palata qo'shish</h3><button class="modal-x" onclick="closeModal('addWard')">&times;</button></div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="grid-2">
+      <div class="field"><label>Palata raqami *</label><input name="number" required></div>
+      <div class="field"><label>Nomi *</label><input name="name" required></div>
+      <div class="field"><label>Turi</label><select name="ward_type"><option value="general">Umumiy</option><option value="vip">VIP</option><option value="icu">Reanimatsiya</option><option value="surgery">Jarrohlikdan keyingi</option><option value="pediatric">Bolalar</option><option value="maternity">Tug'uruqxona</option></select></div>
+      <div class="field"><label>Qavat</label><input type="number" name="floor" value="1"></div>
+      <div class="field"><label>O'rinlar soni *</label><input type="number" name="total_beds" required></div>
+      <div class="field"><label>Kunlik narx (so'm)</label><input type="number" name="price_per_day" value="0"></div>
+    </div>
+    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:8px;">
+      <button type="button" onclick="closeModal('addWard')" class="btn btn-ghost">Bekor</button>
+      <button type="submit" class="btn btn-primary">Saqlash</button>
+    </div>
+  </form>
+</div>
+</div>
+{% endblock %}

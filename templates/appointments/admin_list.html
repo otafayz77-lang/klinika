@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Navbatlar{% endblock %}
+{% block page_title %}Barcha navbatlar{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Bemor</th><th>Shifokor</th><th>Sana</th><th>Vaqt</th><th>Holat</th></tr></thead>
+      <tbody>
+      {% for a in appointments %}
+      <tr>
+        <td>{{ a.patient.full_name }}</td>
+        <td>{{ a.doctor }}</td>
+        <td>{{ a.availability.date|date:"d.m.Y" }}</td>
+        <td>{{ a.availability.start_time|time:"H:i" }}</td>
+        <td>
+          {% if a.status == "booked" %}<span class="tag tag-info">Band</span>
+          {% elif a.status == "completed" %}<span class="tag tag-ok">Yakunlandi</span>
+          {% else %}<span class="tag tag-muted">Bekor</span>{% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="empty-row"><i class="fa-solid fa-calendar"></i>Navbat yo'q</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

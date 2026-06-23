@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ro'yxatdan o'tish KlinikaPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root { --teal:#0f4c4c; --terracotta:#d96b4a; --paper:#faf8f3; --ink:#16241f; --line:#dcd6c8; --ink-soft:#5d6b62; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:"Inter",sans-serif; min-height:100vh; background:var(--paper); display:flex; align-items:center; justify-content:center; padding:30px; }
+.wrap { width:100%; max-width:620px; }
+.brand { display:flex; align-items:center; gap:12px; justify-content:center; margin-bottom:26px; }
+.brand .mark { width:40px; height:40px; background:var(--terracotta); border-radius:11px; display:flex; align-items:center; justify-content:center; color:white; font-family:"Fraunces",serif; font-weight:700; }
+.brand .name { font-family:"Fraunces",serif; font-size:20px; font-weight:700; color:var(--ink); }
+.card { background:white; border-radius:18px; padding:34px; border:1px solid var(--line); box-shadow:0 8px 30px rgba(22,36,31,0.08); }
+.card h2 { font-family:"Fraunces",serif; font-size:24px; margin-bottom:4px; }
+.card .sub { font-size:13.5px; color:var(--ink-soft); margin-bottom:24px; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:12.5px; font-weight:700; margin-bottom:5px; color:var(--ink); }
+input, select, textarea { width:100%; padding:10px 13px; border:1.5px solid var(--line); border-radius:9px; font-size:14px; font-family:"Inter",sans-serif; }
+input:focus, select:focus, textarea:focus { outline:none; border-color:var(--teal); box-shadow:0 0 0 3px rgba(15,76,76,0.08); }
+.btn-submit { width:100%; padding:13px; margin-top:6px; background:var(--terracotta); color:white; border:none; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; }
+.btn-submit:hover { background:#b8512f; }
+.err { background:#f6e4e6; color:#8c2f38; padding:11px 15px; border-radius:10px; font-size:13px; margin-bottom:18px; }
+.login-link { text-align:center; margin-top:18px; font-size:13.5px; color:var(--ink-soft); }
+.login-link a { color:var(--terracotta); font-weight:700; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><div class="mark">K</div><div class="name">KlinikaPro</div></div>
+  <div class="card">
+    <h2>Bemor sifatida ro'yxatdan o'tish</h2>
+    <div class="sub">Ro'yxatdan o'tgach, shifokor tanlab navbat band qila olasiz.</div>
+    {% if error %}<div class="err">{{ error }}</div>{% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="grid-2">
+        <div class="field"><label>Familiya *</label><input name="last_name" required></div>
+        <div class="field"><label>Ism *</label><input name="first_name" required></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Tug'ilgan sana *</label><input type="date" name="birth_date" required></div>
+        <div class="field"><label>Jinsi *</label><select name="gender" required><option value="">Tanlang</option><option value="M">Erkak</option><option value="F">Ayol</option></select></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Telefon *</label><input name="phone" required placeholder="+998..."></div>
+        <div class="field"><label>Qon guruhi</label><select name="blood_type"><option value="">Noma'lum</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+      </div>
+      <div class="field"><label>Manzil</label><input name="address"></div>
+      <div class="field"><label>Allergiyalar (bo'lsa)</label><textarea name="allergies" rows="2"></textarea></div>
+      <hr style="border:none; border-top:1px solid var(--line); margin:20px 0;">
+      <div class="grid-2">
+        <div class="field"><label>Login (o'zingiz tanlaysiz) *</label><input name="username" required placeholder="masalan: aziz_2026"></div>
+        <div class="field"><label>Parol *</label><input type="password" name="password" required></div>
+      </div>
+      <button type="submit" class="btn-submit">Ro'yxatdan o'tish</button>
+    </form>
+    <div class="login-link">Akkountingiz bormi? <a href="{% url "login" %}">Kirish</a></div>
+  </div>
+</div>
+</body>
+</html>

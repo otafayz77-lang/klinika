@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Mening panelim{% endblock %}
+{% block page_title %}Xush kelibsiz, Dr. {{ doctor.last_name }}{% endblock %}
+{% block page_sub %}<div class="sub">{{ today|date:"d-F, Y" }}</div>{% endblock %}
+{% block content %}
+<div class="tiles">
+  <div class="tile t-terra"><div class="tile-icon"><i class="fa-solid fa-calendar-day"></i></div><div><div class="tile-val">{{ today_appointments.count }}</div><div class="tile-label">Bugungi qabullar</div></div></div>
+  <div class="tile t-teal"><div class="tile-icon"><i class="fa-solid fa-users"></i></div><div><div class="tile-val">{{ total_patients }}</div><div class="tile-label">Jami bemorlarim</div></div></div>
+  <div class="tile t-gold"><div class="tile-icon"><i class="fa-solid fa-clock"></i></div><div><div class="tile-val">{{ upcoming_slots.count }}</div><div class="tile-label">Bo'sh vaqt slotlari</div></div></div>
+</div>
+
+<div class="grid-2">
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title"><i class="fa-solid fa-calendar-check"></i> Bugungi qabullar</div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Vaqt</th><th>Bemor</th><th>Shikoyat</th><th></th></tr></thead>
+        <tbody>
+        {% for a in today_appointments %}
+        <tr>
+          <td><strong>{{ a.availability.start_time|time:"H:i" }}</strong></td>
+          <td>{{ a.patient.full_name }}<div style="font-size:11px; color:var(--ink-soft);">{{ a.patient.phone }}</div></td>
+          <td style="font-size:12.5px; max-width:160px;">{{ a.complaint|truncatechars:40|default:"—" }}</td>
+          <td><a href="{% url "treatment_create_from_appt" a.patient.pk a.pk %}" class="btn btn-primary btn-sm">Davolash</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="empty-row"><i class="fa-solid fa-calendar-day"></i>Bugun qabul yo'q</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title"><i class="fa-solid fa-clock"></i> Yaqin bo'sh vaqtlarim</div>
+      <a href="{% url "availability_manage" %}" class="btn btn-ghost btn-sm">Boshqarish</a>
+    </div>
+    <div class="panel-body">
+      {% for s in upcoming_slots %}
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid var(--line);">
+        <div style="font-size:13px;"><strong>{{ s.date|date:"d.m.Y" }}</strong> &middot; {{ s.start_time|time:"H:i" }}–{{ s.end_time|time:"H:i" }}</div>
+        <span class="tag tag-ok">Bo'sh</span>
+      </div>
+      {% empty %}
+      <div class="empty-state"><i class="fa-solid fa-clock"></i><p>Bo'sh vaqt kiritilmagan. <a href="{% url "availability_manage" %}" style="color:var(--terracotta); font-weight:700;">Qo'shish</a></p></div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

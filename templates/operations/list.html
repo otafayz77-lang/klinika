@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Operatsiyalar{% endblock %}
+{% block page_title %}Operatsiyalar{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div></div>
+  <button onclick="openModal('addOp')" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Rejalashtirish</button>
+</div>
+<div class="panel">
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Sana</th><th>Bemor</th><th>Operatsiya</th><th>Jarroh</th><th>Xona</th><th>Narxi</th><th>Holat</th></tr></thead>
+      <tbody>
+      {% for op in operations %}
+      <tr>
+        <td style="font-size:12px;">{{ op.scheduled_date|date:"d.m.Y H:i" }}</td>
+        <td>{{ op.patient.full_name }}</td>
+        <td style="font-size:13px;">{{ op.operation_name }}</td>
+        <td>{{ op.lead_surgeon }}</td>
+        <td>{{ op.operation_room }}</td>
+        <td style="font-weight:700;">{{ op.price|floatformat:0 }}</td>
+        <td>{% if op.status == "completed" %}<span class="tag tag-ok">Yakunlandi</span>{% elif op.status == "cancelled" %}<span class="tag tag-danger">Bekor</span>{% else %}<span class="tag tag-info">Rejalangan</span>{% endif %}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="empty-row">Operatsiya yo'q</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal-bg" id="addOp">
+<div class="modal" style="max-width:600px;">
+  <div class="modal-head"><h3>Operatsiya rejalashtirish</h3><button class="modal-x" onclick="closeModal('addOp')">&times;</button></div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="grid-2">
+      <div class="field"><label>Bemor *</label><select name="patient" required><option value="">Tanlang</option>{% for p in patients %}<option value="{{ p.pk }}">{{ p.full_name }}</option>{% endfor %}</select></div>
+      <div class="field"><label>Jarroh *</label><select name="lead_surgeon" required><option value="">Tanlang</option>{% for d in doctors %}<option value="{{ d.pk }}">{{ d }}</option>{% endfor %}</select></div>
+    </div>
+    <div class="field"><label>Operatsiya nomi *</label><input name="operation_name" required></div>
+    <div class="grid-2">
+      <div class="field"><label>Xona *</label><input name="operation_room" required></div>
+      <div class="field"><label>Vaqti *</label><input type="datetime-local" name="scheduled_date" required></div>
+      <div class="field"><label>Narxi</label><input type="number" name="price" value="0"></div>
+    </div>
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button type="button" onclick="closeModal('addOp')" class="btn btn-ghost">Bekor</button>
+      <button type="submit" class="btn btn-primary">Saqlash</button>
+    </div>
+  </form>
+</div>
+</div>
+{% endblock %}

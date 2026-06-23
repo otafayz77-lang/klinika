@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ staff.full_name }}{% endblock %}
+{% block page_title %}{{ staff.full_name }}{% endblock %}
+{% block page_sub %}<div class="sub">{{ staff.get_position_display }}</div>{% endblock %}
+{% block content %}
+<div class="grid-2" style="grid-template-columns:300px 1fr;">
+  <div>
+    <div class="panel" style="text-align:center; padding:26px;">
+      <div style="width:80px; height:80px; border-radius:50%; background:#e4f0ee; color:var(--teal); display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:700; margin:0 auto 14px;">{{ staff.first_name|first }}</div>
+      <div style="font-size:17px; font-weight:700;">{{ staff.full_name }}</div>
+      <div style="color:var(--ink-soft); font-size:13px;">{{ staff.get_position_display }}</div>
+    </div>
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-head"><div class="panel-title">Ma'lumotlar</div></div>
+      <div class="panel-body" style="font-size:13px;">
+        <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--line);"><span style="color:var(--ink-soft);">Telefon</span><strong>{{ staff.phone|default:"—" }}</strong></div>
+        <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--line);"><span style="color:var(--ink-soft);">Oylik maosh</span><strong>{{ staff.monthly_salary|floatformat:0 }} so'm</strong></div>
+        <div style="display:flex; justify-content:space-between; padding:7px 0;"><span style="color:var(--ink-soft);">Ishga kirgan</span><strong>{{ staff.hire_date|date:"d.m.Y"|default:"—" }}</strong></div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+      <a href="{% url "staff_edit" staff.pk %}" class="btn btn-ghost" style="width:100%; justify-content:center;"><i class="fa-solid fa-pen"></i> Tahrirlash</a>
+      {% if staff.doctor %}
+      <form method="post" action="{% url "staff_reset_password" staff.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-ghost" style="width:100%; justify-content:center;"><i class="fa-solid fa-key"></i> Parolni tiklash</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  <div>
+    <div class="panel" style="margin-bottom:18px; background:linear-gradient(135deg,var(--teal-deep),var(--teal)); border:none; color:white;">
+      <div class="panel-body" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;">
+        <div>
+          <div style="font-size:12.5px; opacity:0.8;">Joriy oy ({{ current_period }}) uchun</div>
+          <div style="font-family:'Fraunces',serif; font-size:24px; font-weight:700;">{{ staff.monthly_salary|floatformat:0 }} so'm</div>
+        </div>
+        {% if already_paid_this_month %}
+        <span class="tag" style="background:rgba(255,255,255,0.18); color:white;"><i class="fa-solid fa-check"></i> Bu oy to'langan</span>
+        {% else %}
+        <form method="post" action="{% url "staff_pay_salary" staff.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary">Oylikni to'lash</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title"><i class="fa-solid fa-clock-rotate-left"></i> To'lovlar tarixi</div></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Davr</th><th>Summa</th><th>To'langan sana</th></tr></thead>
+          <tbody>
+          {% for p in payments %}
+          <tr><td>{{ p.period }}</td><td style="font-weight:700;">{{ p.amount|floatformat:0 }} so'm</td><td style="font-size:12px;">{{ p.paid_at|date:"d.m.Y H:i" }}</td></tr>
+          {% empty %}
+          <tr><td colspan="3" class="empty-row">Hali to'lov yo'q</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

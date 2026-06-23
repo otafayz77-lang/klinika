@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Yotgan bemorlar{% endblock %}
+{% block page_title %}Yotgan bemorlar{% endblock %}
+{% block page_sub %}<div class="sub">Hozir {{ admissions.count }} ta bemor palatada yotmoqda</div>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div></div>
+  <button onclick="openModal('addAdm')" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Bemor yotqizish</button>
+</div>
+<div class="panel">
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Bemor</th><th>Palata</th><th>O'rin</th><th>Shifokor</th><th>Tashxis</th><th>Kunlar</th><th></th></tr></thead>
+      <tbody>
+      {% for a in admissions %}
+      <tr>
+        <td><a href="{% url "patient_detail_admin" a.patient.pk %}" style="color:var(--teal); font-weight:600;">{{ a.patient.full_name }}</a></td>
+        <td>Palata {{ a.ward.number }}</td>
+        <td>{{ a.bed_number|default:"—" }}</td>
+        <td style="font-size:13px;">{{ a.doctor }}</td>
+        <td style="font-size:13px; max-width:180px;">{{ a.diagnosis|truncatechars:50 }}</td>
+        <td><span class="tag tag-warn">{{ a.days_admitted }} kun</span></td>
+        <td>
+          <form method="post" action="{% url "discharge_patient" a.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-ghost btn-sm">Chiqarish</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="empty-row"><i class="fa-solid fa-bed"></i>Hozir yotgan bemor yo'q</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal-bg" id="addAdm">
+<div class="modal" style="max-width:560px;">
+  <div class="modal-head"><h3>Bemor yotqizish</h3><button class="modal-x" onclick="closeModal('addAdm')">&times;</button></div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="field"><label>Bemor *</label><select name="patient" required><option value="">Tanlang</option>{% for p in patients %}<option value="{{ p.pk }}">{{ p.full_name }} ({{ p.patient_id }})</option>{% endfor %}</select></div>
+    <div class="grid-2">
+      <div class="field"><label>Palata *</label><select name="ward" required><option value="">Tanlang</option>{% for w in wards %}<option value="{{ w.pk }}">{{ w.number }} — {{ w.name }} ({{ w.available_beds }} bo'sh)</option>{% endfor %}</select></div>
+      <div class="field"><label>O'rin raqami</label><input name="bed_number"></div>
+    </div>
+    <div class="field"><label>Mas'ul shifokor *</label><select name="doctor" required><option value="">Tanlang</option>{% for d in doctors %}<option value="{{ d.pk }}">{{ d }}</option>{% endfor %}</select></div>
+    <div class="field"><label>Tashxis *</label><textarea name="diagnosis" rows="2" required></textarea></div>
+    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:8px;">
+      <button type="button" onclick="closeModal('addAdm')" class="btn btn-ghost">Bekor</button>
+      <button type="submit" class="btn btn-primary">Yotqizish</button>
+    </div>
+  </form>
+</div>
+</div>
+{% endblock %}

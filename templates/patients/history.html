@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Davolanish tarixi{% endblock %}
+{% block page_title %}Davolanish tarixim{% endblock %}
+{% block content %}
+{% for t in treatments %}
+<div class="panel" style="margin-bottom:16px;">
+  <div class="panel-head">
+    <div class="panel-title"><i class="fa-solid fa-stethoscope"></i> {{ t.created_at|date:"d.m.Y" }} — Dr. {{ t.doctor }}</div>
+    <span class="tag tag-info">{{ t.total_price|floatformat:0 }} so'm</span>
+  </div>
+  <div class="panel-body">
+    <div style="margin-bottom:10px;"><strong>Tashxis:</strong> {{ t.diagnosis }}</div>
+    {% if t.notes %}<div style="margin-bottom:10px; color:var(--ink-soft); font-size:13.5px;">{{ t.notes }}</div>{% endif %}
+    {% if t.used_items.all %}
+    <div style="font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;">Ishlatilgan mahsulotlar</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Nomi</th><th>Miqdor</th><th>Narxi</th></tr></thead>
+        <tbody>
+        {% for item in t.used_items.all %}
+        <tr><td>{{ item.medicine }}</td><td>{{ item.quantity }}</td><td>{{ item.total_price|floatformat:0 }} so'm</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% empty %}
+<div class="empty-state"><i class="fa-solid fa-file-medical"></i><p>Hali davolanish tarixi yo'q</p></div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Bo'sh vaqtlarim{% endblock %}
+{% block page_title %}Bo'sh vaqtlarim{% endblock %}
+{% block page_sub %}<div class="sub">Bemorlar faqat shu yerda ko'rsatilgan vaqtlarga navbat olishi mumkin</div>{% endblock %}
+{% block content %}
+<div class="grid-2" style="grid-template-columns:340px 1fr;">
+  <div class="panel" style="align-self:start;">
+    <div class="panel-head"><div class="panel-title"><i class="fa-solid fa-plus"></i> Yangi vaqt qo'shish</div></div>
+    <div class="panel-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="field"><label>Sana *</label><input type="date" name="date" min="{{ today|date:"Y-m-d" }}" required></div>
+        <div class="field"><label>Boshlanish vaqti *</label><input type="time" name="start_time" required></div>
+        <div class="field"><label>Tugash vaqti *</label><input type="time" name="end_time" required></div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;"><i class="fa-solid fa-floppy-disk"></i> Qo'shish</button>
+      </form>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title"><i class="fa-solid fa-list"></i> Mening slotlarim</div></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Sana</th><th>Vaqt</th><th>Holat</th><th></th></tr></thead>
+        <tbody>
+        {% for s in slots %}
+        <tr>
+          <td>{{ s.date|date:"d.m.Y" }}</td>
+          <td>{{ s.start_time|time:"H:i" }} – {{ s.end_time|time:"H:i" }}</td>
+          <td>{% if s.is_booked %}<span class="tag tag-danger">Band</span>{% else %}<span class="tag tag-ok">Bo'sh</span>{% endif %}</td>
+          <td>
+            {% if not s.is_booked %}
+            <form method="post" action="{% url "availability_delete" s.pk %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-ghost btn-sm" onclick="return confirm('O\'chirilsinmi?')"><i class="fa-solid fa-trash"></i></button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="empty-row"><i class="fa-solid fa-clock"></i>Hali vaqt qo'shilmagan</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

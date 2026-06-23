@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Shifokor qo'shish{% endblock %}
+{% block page_title %}Yangi shifokor qo'shish{% endblock %}
+{% block page_sub %}<div class="sub">10 ta asosiy ma'lumot — login va parol avtomatik yaratiladi</div>{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:760px;">
+  <div class="panel-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="grid-2">
+        <div class="field"><label>1. Ism *</label><input name="first_name" required></div>
+        <div class="field"><label>2. Familiya *</label><input name="last_name" required></div>
+        <div class="field"><label>3. Telefon *</label><input name="phone" required placeholder="+998..."></div>
+        <div class="field"><label>4. Jinsi *</label><select name="gender" required><option value="">Tanlang</option><option value="M">Erkak</option><option value="F">Ayol</option></select></div>
+        <div class="field"><label>5. Mutaxassislik *</label>
+          <select name="specialization" required>
+            <option value="">Tanlang</option>
+            {% for s in specializations %}<option value="{{ s.pk }}">{{ s.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="field"><label>6. Tajriba (yil) *</label><input type="number" name="experience_years" min="0" required></div>
+        <div class="field"><label>7. Konsultatsiya narxi (so'm) *</label><input type="number" name="consultation_price" min="0" required></div>
+        <div class="field"><label>8. Kabinet (qabul xonasi)</label>
+          <select name="cabinet">
+            <option value="">Hali biriktirilmasin</option>
+            {% for c in cabinets %}<option value="{{ c.pk }}">Kabinet {{ c.number }} ({{ c.floor }}-qavat)</option>{% endfor %}
+          </select>
+        </div>
+        <div class="field"><label>9. Rasmi</label><input type="file" name="photo" accept="image/*"></div>
+      </div>
+      <div class="field"><label>10. Qisqacha ma'lumot</label><textarea name="bio" rows="3" placeholder="Tajriba, yutuqlar va h.k."></textarea></div>
+      <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:10px;">
+        <a href="{% url "doctors" %}" class="btn btn-ghost">Bekor qilish</a>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Qo'shish</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

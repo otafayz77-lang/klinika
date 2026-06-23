@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Hodimlar{% endblock %}
+{% block page_title %}Hodimlar{% endblock %}
+{% block page_sub %}<div class="sub">Admin, shifokor, hamshira, farrosh va boshqa xodimlar</div>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div></div>
+  <a href="{% url "staff_add" %}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Xodim qo'shish</a>
+</div>
+<div class="panel">
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>F.I.SH</th><th>Lavozim</th><th>Telefon</th><th>Oylik maosh</th><th></th></tr></thead>
+      <tbody>
+      {% for s in staff_members %}
+      <tr>
+        <td><strong>{{ s.full_name }}</strong></td>
+        <td>
+          {% if s.position == "admin" %}<span class="tag tag-info">Administrator</span>
+          {% elif s.position == "doctor" %}<span class="tag tag-warn">Shifokor</span>
+          {% elif s.position == "nurse" %}<span class="tag tag-ok">Hamshira</span>
+          {% elif s.position == "cleaner" %}<span class="tag tag-muted">Farrosh</span>
+          {% else %}<span class="tag tag-muted">{{ s.get_position_display }}</span>{% endif %}
+        </td>
+        <td>{{ s.phone|default:"—" }}</td>
+        <td style="font-weight:700;">{{ s.monthly_salary|floatformat:0 }} so'm</td>
+        <td><a href="{% url "staff_detail" s.pk %}" class="btn btn-ghost btn-sm"><i class="fa-solid fa-eye"></i> Ko'rish</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="empty-row"><i class="fa-solid fa-id-card-clip"></i>Hodim qo'shilmagan</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

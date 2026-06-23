@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Navbat olish{% endblock %}
+{% block page_title %}Dr. {{ doctor.full_name }}{% endblock %}
+{% block page_sub %}<div class="sub">{{ doctor.specialization }} — {{ doctor.consultation_price|floatformat:0 }} so'm</div>{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:600px;">
+  <div class="panel-head"><div class="panel-title"><i class="fa-solid fa-calendar-days"></i> Bo'sh vaqtlardan birini tanlang</div></div>
+  <div class="panel-body">
+    {% if slots %}
+    <form method="post">
+      {% csrf_token %}
+      <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; margin-bottom:20px;">
+        {% for s in slots %}
+        <label style="cursor:pointer;">
+          <input type="radio" name="slot_id" value="{{ s.pk }}" required style="display:none;" class="slot-radio">
+          <div class="slot-box" style="border:1.5px solid var(--line); border-radius:10px; padding:12px; text-align:center; transition:all 0.15s;">
+            <div style="font-size:11px; color:var(--ink-soft); font-weight:600;">{{ s.date|date:"d.m.Y" }}</div>
+            <div style="font-weight:700; font-size:14px; margin-top:3px;">{{ s.start_time|time:"H:i" }}</div>
+          </div>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="field"><label>Shikoyat / sabab</label><textarea name="complaint" rows="3" placeholder="Nima sizni qiynayapti?"></textarea></div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;"><i class="fa-solid fa-check"></i> Navbatni band qilish</button>
+    </form>
+    {% else %}
+    <div class="empty-state"><i class="fa-solid fa-calendar-xmark"></i><p>Vaqt yo'q. Bu shifokorda hozircha bo'sh vaqt mavjud emas.</p></div>
+    <a href="{% url "doctor_list_for_booking" %}" class="btn btn-ghost" style="width:100%; justify-content:center; margin-top:10px;">Boshqa shifokor tanlash</a>
+    {% endif %}
+  </div>
+</div>
+<style>
+.slot-radio:checked + .slot-box { border-color: var(--teal); background: var(--role-doctor-soft); color: var(--teal); }
+</style>
+{% endblock %}

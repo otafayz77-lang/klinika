@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}KlinikaPro{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+  --ink: #16241f;
+  --ink-soft: #4a5a52;
+  --paper: #faf8f3;
+  --paper-raised: #ffffff;
+  --line: #dcd6c8;
+
+  --teal: #0f4c4c;
+  --teal-deep: #0a3535;
+  --terracotta: #d96b4a;
+  --terracotta-deep: #b8512f;
+  --gold: #c08a2e;
+  --sage: #4f7a5e;
+  --rose: #a64550;
+
+  --role-admin: #6b3fa0;
+  --role-admin-soft: #f1e9f8;
+  --role-doctor: #0f4c4c;
+  --role-doctor-soft: #e4f0ee;
+  --role-patient: #b8512f;
+  --role-patient-soft: #fbe9e0;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 2px rgba(22,36,31,0.06);
+  --shadow-md: 0 4px 16px rgba(22,36,31,0.08);
+  --shadow-lg: 0 12px 40px rgba(22,36,31,0.14);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  display: flex;
+  min-height: 100vh;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, .display {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.mono { font-family: 'JetBrains Mono', monospace; letter-spacing: -0.02em; }
+
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 264px;
+  background: var(--teal-deep);
+  position: fixed; top: 0; left: 0; height: 100vh;
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.sb-brand {
+  padding: 28px 24px 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.sb-mark {
+  width: 38px; height: 38px;
+  background: var(--terracotta);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 16px; flex-shrink: 0;
+  font-family: 'Fraunces', serif; font-weight: 700;
+}
+.sb-name { color: #fff; font-size: 17px; font-weight: 700; font-family: 'Fraunces', serif; line-height: 1.1; }
+.sb-role-tag {
+  display: inline-block; margin-top: 3px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 20px;
+}
+.sb-role-tag.admin { background: var(--role-admin); color: white; }
+.sb-role-tag.doctor { background: var(--terracotta); color: white; }
+.sb-role-tag.patient { background: var(--gold); color: white; }
+
+.sb-section {
+  padding: 18px 24px 6px;
+  color: rgba(255,255,255,0.32);
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.sb-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 24px;
+  color: rgba(255,255,255,0.68);
+  font-size: 14px; font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+.sb-link i { width: 18px; text-align: center; font-size: 14px; opacity: 0.85; }
+.sb-link:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.sb-link.active {
+  background: rgba(217,107,74,0.14);
+  color: #fff;
+  border-left-color: var(--terracotta);
+  font-weight: 600;
+}
+.sb-foot { margin-top: auto; padding: 18px 24px; border-top: 1px solid rgba(255,255,255,0.08); }
+.sb-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.sb-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,0.12); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; flex-shrink: 0;
+}
+.sb-username { color: #fff; font-size: 13px; font-weight: 600; }
+.sb-logout {
+  display: flex; align-items: center; gap: 8px;
+  color: rgba(255,255,255,0.55); font-size: 13px;
+  padding: 6px 0;
+}
+.sb-logout:hover { color: #fff; }
+
+/* ===== MAIN ===== */
+.main { margin-left: 264px; flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.topbar {
+  height: 64px; background: var(--paper-raised);
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; padding: 0 32px;
+  position: sticky; top: 0; z-index: 40;
+}
+.topbar h1 { font-size: 20px; font-weight: 600; flex: 1; }
+.topbar .sub { font-size: 12.5px; color: var(--ink-soft); font-weight: 400; margin-top: 2px; }
+
+.content { padding: 32px; flex: 1; max-width: 1320px; }
+
+/* ===== CARDS ===== */
+.panel {
+  background: var(--paper-raised);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+.panel-head {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+}
+.panel-title { font-size: 15.5px; font-weight: 600; font-family: 'Fraunces', serif; display: flex; align-items: center; gap: 9px; }
+.panel-title i { color: var(--terracotta); font-size: 14px; }
+.panel-body { padding: 22px; }
+
+/* ===== STAT TILES ===== */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 26px; }
+.tile {
+  background: var(--paper-raised); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 20px;
+  display: flex; align-items: flex-start; gap: 14px;
+  position: relative; overflow: hidden;
+}
+.tile::before {
+  content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+}
+.tile.t-teal::before { background: var(--teal); }
+.tile.t-terra::before { background: var(--terracotta); }
+.tile.t-gold::before { background: var(--gold); }
+.tile.t-sage::before { background: var(--sage); }
+.tile.t-rose::before { background: var(--rose); }
+.tile.t-purple::before { background: var(--role-admin); }
+.tile-icon {
+  width: 42px; height: 42px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  flex-shrink: 0;
+}
+.t-teal .tile-icon { background: #e4f0ee; color: var(--teal); }
+.t-terra .tile-icon { background: #fbe9e0; color: var(--terracotta); }
+.t-gold .tile-icon { background: #f7ecd6; color: var(--gold); }
+.t-sage .tile-icon { background: #e6efe8; color: var(--sage); }
+.t-rose .tile-icon { background: #f6e4e6; color: var(--rose); }
+.t-purple .tile-icon { background: var(--role-admin-soft); color: var(--role-admin); }
+.tile-val { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; line-height: 1.1; }
+.tile-label { font-size: 12px; color: var(--ink-soft); margin-top: 3px; font-weight: 500; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 9px;
+  border: none; cursor: pointer; font-size: 13.5px; font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--terracotta); color: white; }
+.btn-primary:hover { background: var(--terracotta-deep); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-teal { background: var(--teal); color: white; }
+.btn-teal:hover { background: var(--teal-deep); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+.btn-ghost:hover { border-color: var(--ink-soft); background: rgba(0,0,0,0.02); }
+.btn-danger { background: var(--rose); color: white; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ===== TABLE ===== */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+thead th {
+  padding: 11px 16px; background: #f4f1ea;
+  font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--ink-soft); text-align: left; white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+}
+tbody td { padding: 13px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tbody tr:hover { background: #fbfaf6; }
+tbody tr:last-child td { border-bottom: none; }
+.empty-row { text-align: center; padding: 48px 20px !important; color: var(--ink-soft); }
+.empty-row i { font-size: 28px; opacity: 0.3; display: block; margin-bottom: 10px; }
+
+/* ===== TAGS / BADGES ===== */
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+}
+.tag-ok { background: #e6efe8; color: var(--sage); }
+.tag-warn { background: #f7ecd6; color: var(--gold); }
+.tag-danger { background: #f6e4e6; color: var(--rose); }
+.tag-info { background: #e4f0ee; color: var(--teal); }
+.tag-muted { background: #ece9e1; color: var(--ink-soft); }
+
+/* ===== FORMS ===== */
+.field { margin-bottom: 17px; }
+.field label {
+  display: block; font-size: 12.5px; font-weight: 700;
+  color: var(--ink); margin-bottom: 6px; letter-spacing: 0.01em;
+}
+.field .hint { font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; }
+input, select, textarea {
+  width: 100%; padding: 10px 13px;
+  border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+  font-size: 14px; font-family: 'Inter', sans-serif; color: var(--ink);
+  background: var(--paper-raised);
+  transition: border-color 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none; border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(15,76,76,0.08);
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* ===== MODAL ===== */
+.modal-bg {
+  display: none; position: fixed; inset: 0;
+  background: rgba(22,36,31,0.45); z-index: 200;
+  align-items: center; justify-content: center; padding: 24px;
+  backdrop-filter: blur(2px);
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: var(--paper-raised); border-radius: 18px;
+  width: 100%; max-width: 640px; max-height: 90vh;
+  overflow-y: auto; padding: 28px;
+  box-shadow: var(--shadow-lg);
+}
+.modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.modal-head h3 { font-size: 19px; }
+.modal-x { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--ink-soft); width: 32px; height: 32px; border-radius: 50%; }
+.modal-x:hover { background: #f4f1ea; }
+
+/* ===== ALERTS ===== */
+.flash { padding: 13px 18px; border-radius: var(--radius-sm); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; }
+.flash-success { background: #e6efe8; color: #2d5a3d; border-left: 4px solid var(--sage); }
+.flash-error { background: #f6e4e6; color: #8c2f38; border-left: 4px solid var(--rose); }
+.flash i { font-size: 16px; }
+
+/* ===== PAGE HEAD ===== */
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+.page-head h2 { font-size: 24px; }
+.page-head .sub { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+.search-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--paper-raised); border: 1.5px solid var(--line);
+  border-radius: 24px; padding: 8px 16px;
+}
+.search-pill input { border: none; padding: 0; font-size: 13.5px; width: 200px; }
+.search-pill input:focus { box-shadow: none; }
+.search-pill i { color: var(--ink-soft); font-size: 13px; }
+
+/* ===== EMPTY STATE ===== */
+.empty-state { text-align: center; padding: 56px 24px; color: var(--ink-soft); }
+.empty-state i { font-size: 36px; opacity: 0.25; margin-bottom: 14px; display: block; }
+.empty-state p { font-size: 14px; }
+
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d4cdbd; border-radius: 4px; }
+
+@media (max-width: 860px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .content { padding: 18px; }
+}
+</style>
+</head>
+<body>
+{% if user.is_authenticated %}
+<nav class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-mark">K</div>
+    <div>
+      <div class="sb-name">KlinikaPro</div>
+      <span class="sb-role-tag {{ user.role }}">{{ user.get_role_display }}</span>
+    </div>
+  </div>
+
+  {% if user.role == 'admin' %}
+  <div class="sb-section">Asosiy</div>
+  <a href="{% url 'admin_dashboard' %}" class="sb-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}"><i class="fa-solid fa-gauge"></i> Bosh sahifa</a>
+
+  <div class="sb-section">Odamlar</div>
+  <a href="{% url 'doctors' %}" class="sb-link {% if request.resolver_match.url_name == 'doctors' or request.resolver_match.url_name == 'doctor_add' or request.resolver_match.url_name == 'doctor_detail_admin' or request.resolver_match.url_name == 'doctor_credentials' %}active{% endif %}"><i class="fa-solid fa-user-doctor"></i> Shifokorlar</a>
+  <a href="{% url 'doctor_services_admin' %}" class="sb-link {% if request.resolver_match.url_name == 'doctor_services_admin' %}active{% endif %}"><i class="fa-solid fa-stethoscope"></i> Shifokor xizmatlari</a>
+  <a href="{% url 'patients' %}" class="sb-link {% if request.resolver_match.url_name == 'patients' or request.resolver_match.url_name == 'patient_detail_admin' %}active{% endif %}"><i class="fa-solid fa-users"></i> Bemorlar</a>
+  <a href="{% url 'appointment_list_admin' %}" class="sb-link {% if request.resolver_match.url_name == 'appointment_list_admin' %}active{% endif %}"><i class="fa-solid fa-calendar-check"></i> Navbatlar</a>
+
+  <div class="sb-section">Xonalar</div>
+  <a href="{% url 'wards' %}" class="sb-link {% if request.resolver_match.url_name == 'wards' %}active{% endif %}"><i class="fa-solid fa-bed-pulse"></i> Palatalar (yotish)</a>
+  <a href="{% url 'admissions' %}" class="sb-link {% if request.resolver_match.url_name == 'admissions' %}active{% endif %}"><i class="fa-solid fa-hospital-user"></i> Yotgan bemorlar</a>
+  <a href="{% url 'cabinets' %}" class="sb-link {% if request.resolver_match.url_name == 'cabinets' %}active{% endif %}"><i class="fa-solid fa-door-open"></i> Kabinetlar (qabul)</a>
+
+  <div class="sb-section">Moliya</div>
+  <a href="{% url 'kassa' %}" class="sb-link {% if request.resolver_match.url_name == 'kassa' %}active{% endif %}"><i class="fa-solid fa-cash-register"></i> Kassa</a>
+  <a href="{% url 'expenses' %}" class="sb-link {% if request.resolver_match.url_name == 'expenses' %}active{% endif %}"><i class="fa-solid fa-receipt"></i> Xarajatlar</a>
+
+  <div class="sb-section">Dorixona</div>
+  <a href="{% url 'medicines' %}" class="sb-link {% if request.resolver_match.url_name == 'medicines' %}active{% endif %}"><i class="fa-solid fa-pills"></i> Mahsulotlar</a>
+  <a href="{% url 'medicine_income' %}" class="sb-link {% if request.resolver_match.url_name == 'medicine_income' %}active{% endif %}"><i class="fa-solid fa-truck-medical"></i> Kelishi</a>
+
+  <div class="sb-section">Boshqa</div>
+  <a href="{% url 'operations' %}" class="sb-link {% if request.resolver_match.url_name == 'operations' %}active{% endif %}"><i class="fa-solid fa-scalpel"></i> Operatsiyalar</a>
+  <a href="{% url 'staff_list' %}" class="sb-link {% if 'staff' in request.resolver_match.url_name %}active{% endif %}"><i class="fa-solid fa-id-card-clip"></i> Hodimlar</a>
+
+  {% elif user.role == 'doctor' %}
+  <div class="sb-section">Mening panelim</div>
+  <a href="{% url 'doctor_dashboard' %}" class="sb-link {% if request.resolver_match.url_name == 'doctor_dashboard' %}active{% endif %}"><i class="fa-solid fa-gauge"></i> Bosh sahifa</a>
+  <a href="{% url 'availability_manage' %}" class="sb-link {% if request.resolver_match.url_name == 'availability_manage' %}active{% endif %}"><i class="fa-solid fa-clock"></i> Bo'sh vaqtlarim</a>
+  <a href="{% url 'doctor_patients' %}" class="sb-link {% if request.resolver_match.url_name == 'doctor_patients' %}active{% endif %}"><i class="fa-solid fa-users"></i> Bemorlarim</a>
+  <a href="{% url 'doctor_services' %}" class="sb-link {% if request.resolver_match.url_name == 'doctor_services' %}active{% endif %}"><i class="fa-solid fa-stethoscope"></i> Ko'rik xizmatlarim</a>
+  <a href="{% url 'doctor_profile_edit' %}" class="sb-link {% if request.resolver_match.url_name == 'doctor_profile_edit' %}active{% endif %}"><i class="fa-solid fa-id-badge"></i> Mening profilim</a>
+
+  {% elif user.role == 'patient' %}
+  <div class="sb-section">Mening sahifam</div>
+  <a href="{% url 'patient_dashboard' %}" class="sb-link {% if request.resolver_match.url_name == 'patient_dashboard' %}active{% endif %}"><i class="fa-solid fa-gauge"></i> Bosh sahifa</a>
+  <a href="{% url 'doctor_list_for_booking' %}" class="sb-link {% if request.resolver_match.url_name == 'doctor_list_for_booking' or request.resolver_match.url_name == 'book_appointment' %}active{% endif %}"><i class="fa-solid fa-calendar-plus"></i> Navbat olish</a>
+  <a href="{% url 'patient_history' %}" class="sb-link {% if request.resolver_match.url_name == 'patient_history' %}active{% endif %}"><i class="fa-solid fa-file-medical"></i> Davolanish tarixi</a>
+  {% endif %}
+
+  <div class="sb-foot">
+    <div class="sb-user">
+      <div class="sb-avatar">{{ user.first_name|first|upper|default:user.username|first|upper }}</div>
+      <div>
+        <div class="sb-username">{{ user.first_name|default:user.username }} {{ user.last_name }}</div>
+      </div>
+    </div>
+    <a href="{% url 'logout' %}" class="sb-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Chiqish</a>
+  </div>
+</nav>
+
+<div class="main">
+  <header class="topbar">
+    <div>
+      <h1>{% block page_title %}{% endblock %}</h1>
+      {% block page_sub %}{% endblock %}
+    </div>
+  </header>
+  <div class="content">
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="flash {% if msg.tags == 'error' %}flash-error{% else %}flash-success{% endif %}">
+          <i class="fa-solid {% if msg.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+          {{ msg }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </div>
+</div>
+{% else %}
+{% block noauth %}{% endblock %}
+{% endif %}
+
+<script>
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click', e => { if (e.target.classList.contains('modal-bg')) e.target.classList.remove('open'); });
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
