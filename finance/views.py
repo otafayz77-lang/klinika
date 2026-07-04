@@ -65,3 +65,35 @@ def expense_list(request):
         messages.success(request, "Xarajat qo'shildi.")
         return redirect('expenses')
     return render(request, 'finance/expenses.html', {'expenses': expenses, 'total': total})
+
+
+@login_required
+@role_required('admin')
+def reports(request):
+    from patients.models import Treatment
+    from doctors.models import Doctor
+    from datetime import date, timedelta
+    from django.db.models import Sum, Count
+
+    today = date.today()
+    month_start = today.replace(day=1)
+
+    total_income = CashRegister.objects.filter(transaction_type='income').aggregate(t=Sum('amount'))['t'] or 0
+    total_expense = CashRegister.objects.filter(transaction_type='expense').aggregate(t=Sum('amount'))['t'] or 0
+    balance = total_income - total_expense
+
+    month_income = CashRegister.objects.filter(transaction_type='income', date__date__gte=month_start).aggregate(t=Sum('amount'))['t'] or 0
+    month_expense = CashRegister.objects.filter(transaction_type='expense', date__date__gte=month_start).aggregate(t=Sum('amount'))['t'] or 0
+
+    top_doctors = Doctor.objects.annotate(
+        treatments_count=Count('treatments')
+    ).order_by('-treatments_count')[:5]
+
+    return render(request, 'finance/reports.html', {
+        'total_income': total_income,
+        'total_expense': total_expense,
+        'balance': balance,
+        'month_income': month_income,
+        'month_expense': month_expense,
+        'top_doctors': top_doctors,
+    })

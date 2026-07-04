@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lokatsiyani yuborish</title>
+  </head>
+  <body>
+    <h2>Lokatsiyangiz kerak</h2>
+
+    <button onclick="getLocation()">Lokatsiyani yuborish</button>
+
+    <script>
+      function getLocation() {
+        if (!navigator.geolocation) {
+          alert("Brauzer qo'llab-quvvatlamaydi.");
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error);
+
+        function success(position) {
+          fetch("/send-location", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            }),
+          });
+
+          alert("Lokatsiya yuborildi.");
+        }
+
+        function error() {
+          alert("Ruxsat berilmadi.");
+        }
+      }
+    </script>
+  </body>
+</html>

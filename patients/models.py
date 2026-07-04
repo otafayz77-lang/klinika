@@ -60,6 +60,7 @@ class Treatment(models.Model):
     notes = models.TextField(blank=True, verbose_name="Izoh")
     total_price = models.DecimalField(max_digits=12, decimal_places=0, default=0, verbose_name="Jami narx")
     created_at = models.DateTimeField(auto_now_add=True)
+    receipt_issued = models.BooleanField(default=False, verbose_name="Chek berilganmi")
 
     def recalc_total(self):
         total = self.consultation_price_snapshot or 0

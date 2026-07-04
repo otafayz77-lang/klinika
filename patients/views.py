@@ -30,6 +30,16 @@ def patient_list_admin(request):
 @role_required('admin')
 def patient_detail_admin(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
+
+    # To'lovni qabul qilish
+    if request.method == 'POST' and 'pay_treatment_id' in request.POST:
+        treatment_id = request.POST.get('pay_treatment_id')
+        try:
+            treatment = Treatment.objects.get(pk=treatment_id, patient=patient)
+            messages.success(request, f"{patient.full_name} uchun {treatment.total_price:,.0f} so'm to'landi.")
+        except Treatment.DoesNotExist:
+            messages.error(request, "Davolash topilmadi.")
+
     treatments = patient.treatments.select_related('doctor').order_by('-created_at')
     appointments = patient.appointments.select_related('doctor', 'availability').order_by('-created_at')[:10]
     return render(request, 'patients/admin_detail.html', {
@@ -132,3 +142,16 @@ def treatment_create(request, patient_pk, appointment_pk=None):
     return render(request, 'patients/treatment_form.html', {
         'patient': patient, 'doctor': doctor, 'medicines': medicines, 'services': services,
     })
+
+
+# ============ CHEK (Receipt) ============
+
+@login_required
+def treatment_receipt(request, treatment_pk):
+    treatment = get_object_or_404(Treatment, pk=treatment_pk)
+    # Faqat bemor o'zi yoki admin/doktor ko'ra oladi
+    if request.user.role == 'patient' and treatment.patient.user != request.user:
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden()
+
+    return render(request, 'patients/receipt.html', {'treatment': treatment})

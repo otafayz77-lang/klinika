@@ -7,6 +7,9 @@
   <div class="panel-head">
     <div class="panel-title"><i class="fa-solid fa-stethoscope"></i> {{ t.created_at|date:"d.m.Y" }} — Dr. {{ t.doctor }}</div>
     <span class="tag tag-info">{{ t.total_price|floatformat:0 }} so'm</span>
+    <a href="{% url 'treatment_receipt' t.pk %}" target="_blank" class="btn btn-ghost btn-sm" style="margin-left:10px; font-size:12px; padding:4px 10px;">
+      <i class="fa-solid fa-receipt"></i> Chek
+    </a>
   </div>
   <div class="panel-body">
     <div style="margin-bottom:10px;"><strong>Tashxis:</strong> {{ t.diagnosis }}</div>

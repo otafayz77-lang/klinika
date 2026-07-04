@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Hisobotlar{% endblock %}
+{% block page_title %}Hisobotlar{% endblock %}
+{% block page_sub %}Klinika umumiy statistikasi{% endblock %}
+{% block content %}
+
+<div class="tiles">
+  <div class="tile t-teal">
+    <div>
+      <div class="tile-val">{{ total_income|floatformat:0 }}</div>
+      <div class="tile-label">Jami kirim (so'm)</div>
+    </div>
+  </div>
+  <div class="tile t-rose">
+    <div>
+      <div class="tile-val">{{ total_expense|floatformat:0 }}</div>
+      <div class="tile-label">Jami chiqim (so'm)</div>
+    </div>
+  </div>
+  <div class="tile t-sage">
+    <div>
+      <div class="tile-val">{{ balance|floatformat:0 }}</div>
+      <div class="tile-label">Joriy balans (so'm)</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title"><i class="fa-solid fa-chart-line"></i> Bu oy</div>
+    </div>
+    <div class="panel-body">
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+        <div><strong>Kirim:</strong> <span style="color:#16a34a;">{{ month_income|floatformat:0 }} so'm</span></div>
+        <div><strong>Chiqim:</strong> <span style="color:#dc2626;">{{ month_expense|floatformat:0 }} so'm</span></div>
+      </div>
+      <div style="font-size:13px; color:#64748b;">Balans: <strong>{{ month_income|add:month_expense|floatformat:0 }}</strong> so'm</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title"><i class="fa-solid fa-user-doctor"></i> Eng faol shifokorlar (davolashlar soni)</div>
+    </div>
+    <div class="panel-body">
+      {% for doc in top_doctors %}
+      <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1e7d2;">
+        <div>Dr. {{ doc.full_name }}</div>
+        <div><strong>{{ doc.treatments_count }}</strong> ta</div>
+      </div>
+      {% empty %}
+      <div style="color:#64748b; text-align:center; padding:20px;">Ma'lumot yo'q</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

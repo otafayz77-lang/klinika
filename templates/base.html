@@ -9,32 +9,36 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
 :root {
-  --ink: #16241f;
-  --ink-soft: #4a5a52;
-  --paper: #faf8f3;
+  /* ===== PREMIUM MEDICAL GREEN THEME ===== */
+  --ink: #0f172a;
+  --ink-soft: #475569;
+  --paper: #f8fafc;
   --paper-raised: #ffffff;
-  --line: #dcd6c8;
+  --line: #e2e8f0;
 
-  --teal: #0f4c4c;
-  --teal-deep: #0a3535;
-  --terracotta: #d96b4a;
-  --terracotta-deep: #b8512f;
-  --gold: #c08a2e;
-  --sage: #4f7a5e;
-  --rose: #a64550;
+  /* Main Green Palette (Light + Fresh) */
+  --green: #10b981;
+  --green-light: #34d399;
+  --green-dark: #059669;
+  --green-deep: #047857;
 
-  --role-admin: #6b3fa0;
-  --role-admin-soft: #f1e9f8;
-  --role-doctor: #0f4c4c;
-  --role-doctor-soft: #e4f0ee;
-  --role-patient: #b8512f;
-  --role-patient-soft: #fbe9e0;
+  /* Accent */
+  --accent: #14b8a6;        /* Teal-green */
+  --gold: #d97706;
 
-  --radius: 14px;
-  --radius-sm: 8px;
-  --shadow-sm: 0 1px 2px rgba(22,36,31,0.06);
-  --shadow-md: 0 4px 16px rgba(22,36,31,0.08);
-  --shadow-lg: 0 12px 40px rgba(22,36,31,0.14);
+  /* Role colors */
+  --role-admin: #7c3aed;
+  --role-admin-soft: #ede9fe;
+  --role-doctor: #059669;
+  --role-doctor-soft: #d1fae5;
+  --role-patient: #ea580c;
+  --role-patient-soft: #ffedd5;
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -4px rgba(15, 23, 42, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -61,11 +65,11 @@ a { color: inherit; text-decoration: none; }
 /* ===== SIDEBAR ===== */
 .sidebar {
   width: 264px;
-  background: var(--teal-deep);
+  background: #064e3b; /* Deep green */
   position: fixed; top: 0; left: 0; height: 100vh;
   overflow-y: auto;
   display: flex; flex-direction: column;
-  border-right: 1px solid rgba(255,255,255,0.06);
+  border-right: 1px solid rgba(255,255,255,0.08);
 }
 .sb-brand {
   padding: 28px 24px 20px;
@@ -73,7 +77,7 @@ a { color: inherit; text-decoration: none; }
 }
 .sb-mark {
   width: 38px; height: 38px;
-  background: var(--terracotta);
+  background: #10b981;
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   color: white; font-size: 16px; flex-shrink: 0;
@@ -86,7 +90,7 @@ a { color: inherit; text-decoration: none; }
   padding: 2px 8px; border-radius: 20px;
 }
 .sb-role-tag.admin { background: var(--role-admin); color: white; }
-.sb-role-tag.doctor { background: var(--terracotta); color: white; }
+.sb-role-tag.doctor { background: #059669; color: white; }
 .sb-role-tag.patient { background: var(--gold); color: white; }
 
 .sb-section {
@@ -105,10 +109,11 @@ a { color: inherit; text-decoration: none; }
 .sb-link i { width: 18px; text-align: center; font-size: 14px; opacity: 0.85; }
 .sb-link:hover { background: rgba(255,255,255,0.05); color: #fff; }
 .sb-link.active {
-  background: rgba(217,107,74,0.14);
+  background: rgba(16, 185, 129, 0.18);
   color: #fff;
-  border-left-color: var(--terracotta);
-  font-weight: 600;
+  border-left-color: #10b981;
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 #10b981;
 }
 .sb-foot { margin-top: auto; padding: 18px 24px; border-top: 1px solid rgba(255,255,255,0.08); }
 .sb-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
@@ -131,30 +136,61 @@ a { color: inherit; text-decoration: none; }
 .topbar {
   height: 64px; background: var(--paper-raised);
   border-bottom: 1px solid var(--line);
-  display: flex; align-items: center; padding: 0 32px;
+  display: flex; align-items: center; padding: 0 20px 0 32px;
   position: sticky; top: 0; z-index: 40;
 }
 .topbar h1 { font-size: 20px; font-weight: 600; flex: 1; }
 .topbar .sub { font-size: 12.5px; color: var(--ink-soft); font-weight: 400; margin-top: 2px; }
 
+/* Mobile menu button */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: var(--ink);
+  margin-right: 12px;
+  cursor: pointer;
+}
+@media (max-width: 860px) {
+  .mobile-menu-btn { display: block; }
+}
+
 .content { padding: 32px; flex: 1; max-width: 1320px; }
 
-/* ===== CARDS ===== */
+/* ===== CARDS (Premium) ===== */
 .panel {
   background: var(--paper-raised);
   border-radius: var(--radius);
   border: 1px solid var(--line);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 10px 30px -15px rgba(22, 36, 31, 0.12), 0 4px 6px -1px rgba(22, 36, 31, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.panel:hover {
+  box-shadow: 0 20px 40px -15px rgba(22, 36, 31, 0.15);
 }
 .panel-head {
-  padding: 18px 22px;
+  padding: 20px 26px;
   border-bottom: 1px solid var(--line);
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px;
+  background: #fdfcf8;
+  border-radius: var(--radius) var(--radius) 0 0;
 }
-.panel-title { font-size: 15.5px; font-weight: 600; font-family: 'Fraunces', serif; display: flex; align-items: center; gap: 9px; }
-.panel-title i { color: var(--terracotta); font-size: 14px; }
-.panel-body { padding: 22px; }
+.panel-title { 
+  font-size: 16px; font-weight: 600; font-family: 'Fraunces', serif; 
+  display: flex; align-items: center; gap: 10px; 
+  color: var(--ink);
+}
+.panel-title i { color: var(--green); font-size: 15px; }
+.panel-body { padding: 26px; }
+.panel-foot {
+  padding: 14px 26px;
+  border-top: 1px solid var(--line);
+  background: #fdfcf8;
+  border-radius: 0 0 var(--radius) var(--radius);
+  font-size: 13px;
+}
 
 /* ===== STAT TILES ===== */
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 26px; }
@@ -167,11 +203,11 @@ a { color: inherit; text-decoration: none; }
 .tile::before {
   content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
 }
-.tile.t-teal::before { background: var(--teal); }
-.tile.t-terra::before { background: var(--terracotta); }
+.tile.t-teal::before { background: var(--green); }
+.tile.t-terra::before { background: #f59e0b; }
 .tile.t-gold::before { background: var(--gold); }
-.tile.t-sage::before { background: var(--sage); }
-.tile.t-rose::before { background: var(--rose); }
+.tile.t-sage::before { background: #14b8a6; }
+.tile.t-rose::before { background: #f43f5e; }
 .tile.t-purple::before { background: var(--role-admin); }
 .tile-icon {
   width: 42px; height: 42px; border-radius: 11px;
@@ -187,39 +223,66 @@ a { color: inherit; text-decoration: none; }
 .tile-val { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; line-height: 1.1; }
 .tile-label { font-size: 12px; color: var(--ink-soft); margin-top: 3px; font-weight: 500; }
 
-/* ===== BUTTONS ===== */
+/* ===== BUTTONS (Premium & Serious) ===== */
 .btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 9px 18px; border-radius: 9px;
-  border: none; cursor: pointer; font-size: 13.5px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 22px; border-radius: 10px;
+  border: none; cursor: pointer; font-size: 14px; font-weight: 600;
   font-family: 'Inter', sans-serif;
-  transition: all 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-.btn-primary { background: var(--terracotta); color: white; }
-.btn-primary:hover { background: var(--terracotta-deep); transform: translateY(-1px); box-shadow: var(--shadow-md); }
-.btn-teal { background: var(--teal); color: white; }
-.btn-teal:hover { background: var(--teal-deep); }
-.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
-.btn-ghost:hover { border-color: var(--ink-soft); background: rgba(0,0,0,0.02); }
-.btn-danger { background: var(--rose); color: white; }
-.btn-sm { padding: 6px 12px; font-size: 12px; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { 
+  background: linear-gradient(135deg, #10b981, #059669); 
+  color: white; 
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+.btn-primary:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 22px rgba(16, 185, 129, 0.4);
+}
+.btn-teal { 
+  background: linear-gradient(135deg, var(--teal), var(--teal-deep)); 
+  color: white; 
+}
+.btn-teal:hover { transform: translateY(-1px); }
+.btn-ghost { 
+  background: white; color: var(--ink); 
+  border: 1.5px solid #d1c9b8; 
+  box-shadow: none;
+}
+.btn-ghost:hover { 
+  background: #f8f5ee; 
+  border-color: #b8af9a;
+}
+.btn-danger { background: #9f2a2a; color: white; }
+.btn-danger:hover { background: #7f1f1f; }
+.btn-sm { padding: 7px 14px; font-size: 12.5px; border-radius: 8px; box-shadow: none; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
-/* ===== TABLE ===== */
-.tbl-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+/* ===== TABLE (Premium) ===== */
+.tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--line); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
 thead th {
-  padding: 11px 16px; background: #f4f1ea;
-  font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
-  color: var(--ink-soft); text-align: left; white-space: nowrap;
-  border-bottom: 1px solid var(--line);
+  padding: 14px 20px; background: #f4f1ea;
+  font-weight: 700; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: #5c665f; text-align: left; white-space: nowrap;
+  border-bottom: 2px solid #d9d2c4;
 }
-tbody td { padding: 13px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
-tbody tr:hover { background: #fbfaf6; }
+tbody td { 
+  padding: 15px 20px; 
+  border-bottom: 1px solid #e8e2d6; 
+  vertical-align: middle; 
+  color: #2c3530;
+}
+tbody tr:hover { background: #f9f7f1; }
 tbody tr:last-child td { border-bottom: none; }
-.empty-row { text-align: center; padding: 48px 20px !important; color: var(--ink-soft); }
-.empty-row i { font-size: 28px; opacity: 0.3; display: block; margin-bottom: 10px; }
+.empty-row { 
+  text-align: center; padding: 52px 20px !important; 
+  color: #7a857d; font-weight: 500;
+}
+.empty-row i { font-size: 32px; opacity: 0.25; display: block; margin-bottom: 12px; }
 
 /* ===== TAGS / BADGES ===== */
 .tag {
@@ -302,10 +365,19 @@ input:focus, select:focus, textarea:focus {
 ::-webkit-scrollbar-thumb { background: #d4cdbd; border-radius: 4px; }
 
 @media (max-width: 860px) {
-  .sidebar { transform: translateX(-100%); }
+  .sidebar { 
+    transform: translateX(-100%); 
+    transition: transform 0.3s ease;
+    z-index: 100;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+  }
+  .sidebar.open { 
+    transform: translateX(0); 
+  }
   .main { margin-left: 0; }
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .tiles { grid-template-columns: 1fr; }
   .content { padding: 18px; }
+  .topbar { padding-left: 16px; }
 }
 </style>
 </head>
@@ -338,6 +410,7 @@ input:focus, select:focus, textarea:focus {
   <div class="sb-section">Moliya</div>
   <a href="{% url 'kassa' %}" class="sb-link {% if request.resolver_match.url_name == 'kassa' %}active{% endif %}"><i class="fa-solid fa-cash-register"></i> Kassa</a>
   <a href="{% url 'expenses' %}" class="sb-link {% if request.resolver_match.url_name == 'expenses' %}active{% endif %}"><i class="fa-solid fa-receipt"></i> Xarajatlar</a>
+  <a href="{% url 'reports' %}" class="sb-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}"><i class="fa-solid fa-chart-bar"></i> Hisobotlar</a>
 
   <div class="sb-section">Dorixona</div>
   <a href="{% url 'medicines' %}" class="sb-link {% if request.resolver_match.url_name == 'medicines' %}active{% endif %}"><i class="fa-solid fa-pills"></i> Mahsulotlar</a>
@@ -353,6 +426,7 @@ input:focus, select:focus, textarea:focus {
   <a href="{% url 'availability_manage' %}" class="sb-link {% if request.resolver_match.url_name == 'availability_manage' %}active{% endif %}"><i class="fa-solid fa-clock"></i> Bo'sh vaqtlarim</a>
   <a href="{% url 'doctor_patients' %}" class="sb-link {% if request.resolver_match.url_name == 'doctor_patients' %}active{% endif %}"><i class="fa-solid fa-users"></i> Bemorlarim</a>
   <a href="{% url 'doctor_services' %}" class="sb-link {% if request.resolver_match.url_name == 'doctor_services' %}active{% endif %}"><i class="fa-solid fa-stethoscope"></i> Ko'rik xizmatlarim</a>
+  <a href="{% url 'doctor_operations' %}" class="sb-link {% if request.resolver_match.url_name == 'doctor_operations' %}active{% endif %}"><i class="fa-solid fa-user-md"></i> Operatsiyalarim</a>
   <a href="{% url 'doctor_profile_edit' %}" class="sb-link {% if request.resolver_match.url_name == 'doctor_profile_edit' %}active{% endif %}"><i class="fa-solid fa-id-badge"></i> Mening profilim</a>
 
   {% elif user.role == 'patient' %}
@@ -375,6 +449,9 @@ input:focus, select:focus, textarea:focus {
 
 <div class="main">
   <header class="topbar">
+    <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menyu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
     <div>
       <h1>{% block page_title %}{% endblock %}</h1>
       {% block page_sub %}{% endblock %}
@@ -400,6 +477,22 @@ input:focus, select:focus, textarea:focus {
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.addEventListener('click', e => { if (e.target.classList.contains('modal-bg')) e.target.classList.remove('open'); });
+
+// Mobile sidebar toggle
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking a link on mobile
+document.addEventListener('click', function(e) {
+  const sidebar = document.querySelector('.sidebar');
+  if (window.innerWidth <= 860 && sidebar.classList.contains('open')) {
+    if (e.target.closest('.sb-link')) {
+      sidebar.classList.remove('open');
+    }
+  }
+});
 </script>
 {% block extra_js %}{% endblock %}
 </body>
