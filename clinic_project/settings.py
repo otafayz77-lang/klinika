@@ -113,6 +113,6 @@ import dj_database_url
 
 DATABASES = {
     "default": dj_database_url.parse(
-        os.environ.get("postgresql://clinic_db_gpme_user:LU7SlvUv6C2ErTX8hspC0eRBikCrcAOj@dpg-d8t8dk1o3t8c73ddrh1g-a/clinic_db_gpme")
+        os.environ.get("DATABASE_URL")
     )
 }
