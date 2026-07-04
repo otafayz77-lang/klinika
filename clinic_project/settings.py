@@ -10,12 +10,6 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-clinic-v2-2026')
 DEBUG = os.getenv('DEBUG', 'True').lower() in {'1', 'true', 'yes', 'on'}
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-    if host.strip()
-]
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -116,3 +110,9 @@ DATABASES = {
         os.environ.get("DATABASE_URL")
     )
 }
+
+ALLOWED_HOSTS = [
+    "klinika-3.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
