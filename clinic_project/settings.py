@@ -113,6 +113,4 @@ DATABASES = {
 
 ALLOWED_HOSTS = [
     "klinika-3.onrender.com",
-    "localhost",
-    "127.0.0.1",
 ]
