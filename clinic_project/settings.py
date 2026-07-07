@@ -101,16 +101,6 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-
-
-import dj_database_url
-
-DATABASES = {
-    "default": dj_database_url.parse(
-        os.environ.get("DATABASE_URL")
-    )
-}
-
 ALLOWED_HOSTS = [
-    "klinikakokand.vercel.app",
+    "*",
 ]
