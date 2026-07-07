@@ -112,5 +112,5 @@ DATABASES = {
 }
 
 ALLOWED_HOSTS = [
-    "klinika-3.onrender.com",
+    "klinikakokand.vercel.app",
 ]
